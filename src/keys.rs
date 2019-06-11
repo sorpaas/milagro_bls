@@ -1,15 +1,18 @@
 extern crate amcl;
 extern crate rand;
+extern crate zeroize;
 
 use super::amcl_utils::{self, BigNum, GroupG1, CURVE_ORDER, MOD_BYTE_SIZE};
 use super::errors::DecodeError;
 use super::g1::G1Point;
 use super::rng::get_seeded_rng;
 use rand::Rng;
+use self::zeroize::Zeroize;
 #[cfg(feature = "std")]
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, Zeroize)]
+#[zeroize(drop)]
 /// A BLS secret key.
 pub struct SecretKey {
     pub x: BigNum,
@@ -86,7 +89,7 @@ impl PublicKey {
     /// Instantiate a PublicKey from some GroupG1 point.
     pub fn new_from_raw(pt: &GroupG1) -> Self {
         PublicKey {
-            point: G1Point::from_raw(*pt),
+            point: G1Point::from_raw(pt.clone()),
         }
     }
 

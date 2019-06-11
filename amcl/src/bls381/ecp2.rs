@@ -23,7 +23,7 @@ use bls381::ecp;
 use bls381::fp2::FP2;
 use bls381::big::BIG;
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct ECP2 {
 	x:FP2,
 	y:FP2,

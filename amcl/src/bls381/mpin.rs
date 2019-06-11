@@ -79,14 +79,14 @@ fn hash(sha: usize,c: &mut FP4,U: &mut ECP,r: &mut [u8]) -> bool {
 		let mut h=HASH256::new();
 		h.process_array(&t);
 		let sh=h.hash();
-		for i in 0..ecp::AESKEY {r[i]=sh[i]}	
-		return true;	
+		for i in 0..ecp::AESKEY {r[i]=sh[i]}
+		return true;
 	}
 	if sha==SHA384 {
 		let mut h=HASH384::new();
 		h.process_array(&t);
 		let sh=h.hash();
-		for i in 0..ecp::AESKEY {r[i]=sh[i]}		
+		for i in 0..ecp::AESKEY {r[i]=sh[i]}
 		return true;
 	}
 	if sha==SHA512 {
@@ -94,7 +94,7 @@ fn hash(sha: usize,c: &mut FP4,U: &mut ECP,r: &mut [u8]) -> bool {
 		h.process_array(&t);
 		let sh=h.hash();
 		for i in 0..ecp::AESKEY {r[i]=sh[i]}
-		return true;		
+		return true;
 	}
 	return false;
 
@@ -109,8 +109,8 @@ fn hashit(sha: usize,n: usize,id: &[u8],w: &mut [u8]) -> bool {
 		let mut h=HASH256::new();
 		if n>0 {h.process_num(n as i32)}
 		h.process_array(id);
-        let hs=h.hash();	
-        for i in 0..sha {r[i]=hs[i];}	
+        let hs=h.hash();
+        for i in 0..sha {r[i]=hs[i];}
         didit=true;
 	}
 	if sha==SHA384 {
@@ -118,7 +118,7 @@ fn hashit(sha: usize,n: usize,id: &[u8],w: &mut [u8]) -> bool {
 		if n>0 {h.process_num(n as i32)}
 		h.process_array(id);
 		let hs=h.hash();
-        for i in 0..sha {r[i]=hs[i];}			
+        for i in 0..sha {r[i]=hs[i];}
 		didit=true;
 	}
 	if sha==SHA512 {
@@ -126,8 +126,8 @@ fn hashit(sha: usize,n: usize,id: &[u8],w: &mut [u8]) -> bool {
 		if n>0 {h.process_num(n as i32)}
 		h.process_array(id);
 		let hs=h.hash();
-        for i in 0..sha {r[i]=hs[i];}	
-        didit=true;		
+        for i in 0..sha {r[i]=hs[i];}
+        didit=true;
 	}
 	if !didit {return false}
 
@@ -140,7 +140,7 @@ fn hashit(sha: usize,n: usize,id: &[u8],w: &mut [u8]) -> bool {
 		for i in 0..(rm-sha) {w[i]=0}
 
 
-		//for i in 0..sha {w[i]=r[i]}	
+		//for i in 0..sha {w[i]=r[i]}
 		//for i in sha..rm {w[i]=0}
 	}
 
@@ -201,7 +201,7 @@ pub fn encoding(rng: &mut RAND,e: &mut [u8]) ->isize {
 	let mut u=BIG::frombytes(&t);
 	for i in 0..EFS {t[i]=e[i+EFS+1]}
 	let mut v=BIG::frombytes(&t);
-		
+
 	let mut P=ECP::new_bigs(&u,&v);
 	if P.is_infinity() {return INVALID_POINT}
 
@@ -209,7 +209,7 @@ pub fn encoding(rng: &mut RAND,e: &mut [u8]) ->isize {
 	u=BIG::randomnum(&p,rng);
 
 	let mut su=rng.getbyte() as isize; /*if (su<0) su=-su;*/ su%=2;
-		
+
 	let mut W=emap(&mut u,su);
 	P.sub(&mut W);
 	let sv=P.gets();
@@ -220,8 +220,8 @@ pub fn encoding(rng: &mut RAND,e: &mut [u8]) ->isize {
 	u.tobytes(&mut t);
 	for i in 0..EFS {e[i+1]=t[i]}
 	v.tobytes(&mut t);
-	for i in 0..EFS {e[i+EFS+1]=t[i]}		
-		
+	for i in 0..EFS {e[i+EFS+1]=t[i]}
+
 	return 0;
 }
 
@@ -247,8 +247,8 @@ pub fn decoding(d: &mut [u8]) -> isize {
 	u.tobytes(&mut t);
 	for i in 0..EFS {d[i+1]=t[i]}
 	v.tobytes(&mut t);
-	for i in 0..EFS {d[i+EFS+1]=t[i]}		
-		
+	for i in 0..EFS {d[i+EFS+1]=t[i]}
+
 	return 0;
 }
 
@@ -275,18 +275,18 @@ pub fn recombine_g2(w1: &[u8],w2: &[u8],w: &mut [u8]) -> isize {
 	if P.is_infinity() || Q.is_infinity() {return INVALID_POINT}
 
 	P.add(&mut Q);
-	
+
 	P.tobytes(w);
 	return 0;
 }
-	
+
 /* create random secret S */
 pub fn random_generate(rng: &mut RAND,s: &mut [u8]) -> isize {
 	let r=BIG::new_ints(&rom::CURVE_ORDER);
 	let mut sc=BIG::randomnum(&r,rng);
 	//if rom::AES_S>0 {
 	//	sc.mod2m(2*rom::AES_S);
-	//}		
+	//}
 	sc.tobytes(s);
 	return 0;
 }
@@ -305,8 +305,8 @@ pub fn get_server_secret(s: &[u8],sst: &mut [u8]) -> isize {
 
 /*
  W=x*H(G);
- if RNG == NULL then X is passed in 
- if RNG != NULL the X is passed out 
+ if RNG == NULL then X is passed in
+ if RNG != NULL the X is passed out
  if type=0 W=x*G where G is point on the curve, else W=x*M(G), where M(G) is mapping of octet G to point on the curve
 */
 #[allow(non_snake_case)]
@@ -388,7 +388,7 @@ pub fn restore_factor(sha: usize,cid: &[u8],factor: i32,facbits: i32,token: &mut
 	return 0;
 }
 
-/* Extract PIN from TOKEN for identity CID 
+/* Extract PIN from TOKEN for identity CID
 #[allow(non_snake_case)]
 pub fn extract_pin(sha: usize,cid: &[u8],pin: i32,token: &mut [u8]) -> isize {
 	let mut P=ECP::frombytes(&token);
@@ -412,7 +412,7 @@ pub fn extract_pin(sha: usize,cid: &[u8],pin: i32,token: &mut [u8]) -> isize {
 #[allow(non_snake_case)]
 pub fn precompute(token: &[u8],cid: &[u8],g1: &mut [u8],g2: &mut [u8]) -> isize {
 	let T=ECP::frombytes(&token);
-	if T.is_infinity() {return INVALID_POINT} 
+	if T.is_infinity() {return INVALID_POINT}
 
 	let P=ECP::mapit(&cid);
 
@@ -433,7 +433,7 @@ pub fn precompute(token: &[u8],cid: &[u8],g1: &mut [u8],g2: &mut [u8]) -> isize 
 #[allow(non_snake_case)]
 pub fn get_client_permit(sha: usize,date: usize,s: &[u8],cid: &[u8],ctt: &mut [u8]) ->isize {
 	const RM:usize=big::MODBYTES as usize;
-	let mut h:[u8;RM]=[0;RM];	
+	let mut h:[u8;RM]=[0;RM];
 	hashit(sha,date,cid,&mut h);
 	let mut P=ECP::mapit(&h);
 
@@ -446,7 +446,7 @@ pub fn get_client_permit(sha: usize,date: usize,s: &[u8],cid: &[u8],ctt: &mut [u
 #[allow(non_snake_case)]
 pub fn client_1(sha: usize,date: usize,client_id: &[u8],rng: Option<&mut RAND>,x: &mut [u8],pin: usize,token: &[u8],sec: &mut [u8],xid: Option<&mut [u8]>,xcid: Option<&mut [u8]>,permit: Option<&[u8]>) ->isize {
 	let r=BIG::new_ints(&rom::CURVE_ORDER);
-		
+
 	let mut sx:BIG;
 
 	if let Some(rd)=rng
@@ -465,7 +465,7 @@ pub fn client_1(sha: usize,date: usize,client_id: &[u8],rng: Option<&mut RAND>,x
 
 	hashit(sha,0,&client_id,&mut h);
 	let mut P=ECP::mapit(&h);
-	
+
 	let mut T=ECP::frombytes(&token);
 	if T.is_infinity() {return INVALID_POINT}
 
@@ -475,7 +475,7 @@ pub fn client_1(sha: usize,date: usize,client_id: &[u8],rng: Option<&mut RAND>,x
 		if let Some(rpermit)=permit {W=ECP::frombytes(&rpermit);}
 		if W.is_infinity() {return INVALID_POINT}
 		T.add(&mut W);
-		let mut h2:[u8;RM]=[0;RM];		
+		let mut h2:[u8;RM]=[0;RM];
 		hashit(sha,date,&h,&mut h2);
 		W=ECP::mapit(&h2);
 		if let Some(mut rxid)=xid {
@@ -505,18 +505,18 @@ pub fn server_1(sha: usize,date: usize,cid: &[u8],hid: &mut [u8],htid: Option<&m
 	const RM:usize=big::MODBYTES as usize;
 	let mut h:[u8;RM]=[0;RM];
 
-	hashit(sha,0,cid,&mut h);	
+	hashit(sha,0,cid,&mut h);
 
 	let mut P=ECP::mapit(&h);
-	
+
 	P.tobytes(hid,false);
 	if date!=0 {
-		let mut h2:[u8;RM]=[0;RM];		
+		let mut h2:[u8;RM]=[0;RM];
 		hashit(sha,date,&h,&mut h2);
 		let mut R=ECP::mapit(&h2);
 		P.add(&mut R);
 		if let Some(rhtid)=htid {P.tobytes(rhtid,false);}
-	} 
+	}
 }
 
 /* Implement step 2 on client side of MPin protocol */
@@ -535,14 +535,14 @@ pub fn client_2(x: &[u8],y: &[u8],sec: &mut [u8]) -> isize {
 	P=pair::g1mul(&mut P,&mut px);
 	P.neg();
 	P.tobytes(sec,false);
-	
+
 	return 0;
 }
 
 #[cfg(feature = "std")]
 /* return time since epoch */
 pub fn get_time() -> usize {
-  	return (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()) as usize;	
+  	return (SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()) as usize;
 }
 
 /* Generate Y = H(epoch, xCID/xID) */
@@ -550,7 +550,7 @@ pub fn get_y(sha: usize,timevalue: usize,xcid: &[u8],y: &mut [u8]) {
 	const RM:usize=big::MODBYTES as usize;
 	let mut h:[u8;RM]=[0;RM];
 
-	hashit(sha,timevalue,xcid,&mut h);	
+	hashit(sha,timevalue,xcid,&mut h);
 
 	let mut sy= BIG::frombytes(&h);
 	let mut q=BIG::new_ints(&rom::CURVE_ORDER);
@@ -568,7 +568,7 @@ pub fn server_2(date: usize,hid: &[u8],htid: Option<&[u8]>,y: &[u8],sst: &[u8],x
 	let Q=ECP2::generator();
 
 	let sQ=ECP2::frombytes(&sst);
-	if sQ.is_infinity() {return INVALID_POINT}	
+	if sQ.is_infinity() {return INVALID_POINT}
 
 	let mut R:ECP;
 	if date!=0 {
@@ -588,7 +588,7 @@ pub fn server_2(date: usize,hid: &[u8],htid: Option<&[u8]>,y: &[u8],sst: &[u8],x
 	} else {
 		P=ECP::frombytes(&hid);
 	}
-	
+
 	if P.is_infinity() {return INVALID_POINT}
 
 	P=pair::g1mul(&mut P,&mut sy);
@@ -603,7 +603,7 @@ pub fn server_2(date: usize,hid: &[u8],htid: Option<&[u8]>,y: &[u8],sst: &[u8],x
 	g=pair::fexp(&g);
 
 	if !g.isunity() {
-		
+
 		if let Some(rxid)=xid {
 			if let Some(re)=e {
 				if let Some(rf)=f {
@@ -611,11 +611,11 @@ pub fn server_2(date: usize,hid: &[u8],htid: Option<&[u8]>,y: &[u8],sst: &[u8],x
 					g.tobytes(re);
 					if date!=0 {
 						P=ECP::frombytes(&hid);
-						if P.is_infinity() {return INVALID_POINT}		
+						if P.is_infinity() {return INVALID_POINT}
 						R=ECP::frombytes(&rxid);
-						if R.is_infinity() {return INVALID_POINT}			
+						if R.is_infinity() {return INVALID_POINT}
 						P=pair::g1mul(&mut P,&mut sy);
-						P.add(&mut R);	P.affine();								
+						P.add(&mut R);	P.affine();
 					}
 					g=pair::ate(&Q,&P);
 					g=pair::fexp(&g);
@@ -624,13 +624,13 @@ pub fn server_2(date: usize,hid: &[u8],htid: Option<&[u8]>,y: &[u8],sst: &[u8],x
 				}
 			}
 		}
-	
+
 		return BAD_PIN;
 	}
 
 	return 0;
 }
-
+/*
 /* Pollards kangaroos used to return PIN error */
 pub fn kangaroo(e: &[u8],f: &[u8]) -> isize {
 	let mut ge=FP12::frombytes(e);
@@ -675,13 +675,13 @@ pub fn kangaroo(e: &[u8],f: &[u8]) -> isize {
 	}
 	if steps>4*TRAP || dm-dn>=MAXPIN as isize {res=0 }    // Trap Failed  - probable invalid token
 	return res;
-}
+}*/
 
 /* Hash the M-Pin transcript - new */
 
 pub fn hash_all(sha: usize,hid: &[u8],xid: &[u8],xcid: Option<&[u8]>,sec: &[u8],y: &[u8],r: &[u8],w: &[u8],h: &mut[u8]) -> bool {
 	let mut tlen:usize=0;
-	const RM:usize=big::MODBYTES as usize;	
+	const RM:usize=big::MODBYTES as usize;
 	let mut t: [u8;10*RM+4]=[0;10*RM+4];
 
 	for i in 0 .. hid.len() {t[i]=hid[i]}
@@ -693,16 +693,16 @@ pub fn hash_all(sha: usize,hid: &[u8],xid: &[u8],xcid: Option<&[u8]>,sec: &[u8],
 	} else {
 		for i in 0..xid.len() {t[i+tlen]=xid[i]}
 		tlen+=xid.len();
-	}	
+	}
 
 	for i in 0..sec.len() {t[i+tlen]=sec[i]}
-	tlen+=sec.len();		
+	tlen+=sec.len();
 	for i in 0..y.len() {t[i+tlen]=y[i]}
 	tlen+=y.len();
 	for i in 0..r.len() {t[i+tlen]=r[i]}
-	tlen+=r.len();		
+	tlen+=r.len();
 	for i in 0..w.len() {t[i+tlen]=w[i]}
-	tlen+=w.len();	
+	tlen+=w.len();
 	if tlen!=10*RM+4 {return false}
 
 	return hashit(sha,0,&t,h);
@@ -720,7 +720,7 @@ pub fn client_key(sha: usize,g1: &[u8],g2: &[u8],pin: usize,r: &[u8],x: &[u8],h:
 	let h=BIG::frombytes(&h);
 
 	let mut W=ECP::frombytes(&wcid);
-	if W.is_infinity() {return INVALID_POINT} 
+	if W.is_infinity() {return INVALID_POINT}
 
 	W=pair::g1mul(&mut W,&mut x);
 
@@ -736,7 +736,7 @@ pub fn client_key(sha: usize,g1: &[u8],g2: &[u8],pin: usize,r: &[u8],x: &[u8],h:
 
 	let mut c=g1.compow(&z,&mut r);
 
-/*	
+/*
 
 	let mut m=BIG::new_copy(&q);
 	m.rmod(&mut r);
@@ -770,11 +770,11 @@ pub fn client_key(sha: usize,g1: &[u8],g2: &[u8],pin: usize,r: &[u8],x: &[u8],h:
 #[allow(non_snake_case)]
 pub fn server_key(sha: usize,z: &[u8],sst: &[u8],w: &[u8],h: &[u8],hid: &[u8],xid: &[u8],xcid: Option<&[u8]>,sk: &mut [u8]) -> isize {
 	let sQ=ECP2::frombytes(&sst);
-	if sQ.is_infinity() {return INVALID_POINT} 
+	if sQ.is_infinity() {return INVALID_POINT}
 	let mut R=ECP::frombytes(&z);
-	if R.is_infinity() {return INVALID_POINT} 
+	if R.is_infinity() {return INVALID_POINT}
 	let mut A=ECP::frombytes(&hid);
-	if A.is_infinity() {return INVALID_POINT} 
+	if A.is_infinity() {return INVALID_POINT}
 
 	let mut U=ECP::new();
 	if let Some(rxcid)=xcid {
@@ -782,8 +782,8 @@ pub fn server_key(sha: usize,z: &[u8],sst: &[u8],w: &[u8],h: &[u8],hid: &[u8],xi
 	} else {
 		U.copy(&ECP::frombytes(&xid));
 	}
-	
-	if U.is_infinity() {return INVALID_POINT} 
+
+	if U.is_infinity() {return INVALID_POINT}
 
 	let mut w=BIG::frombytes(&w);
 	let mut h=BIG::frombytes(&h);
@@ -800,5 +800,3 @@ pub fn server_key(sha: usize,z: &[u8],sst: &[u8],w: &[u8],h: &[u8],hid: &[u8],xi
 
 	return 0
 }
-
-

@@ -22,7 +22,7 @@ use bls381::big::BIG;
 use bls381::big;
 use bls381::rom;
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct ECP {
 	x:FP,
 	y:FP,

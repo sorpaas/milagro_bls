@@ -16,6 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+extern crate zeroize;
 
 use arch;
 use arch::Chunk;
@@ -25,6 +26,7 @@ use arch::DChunk;
 
 use bls381::dbig::DBIG;
 use rand::RAND;
+use self::zeroize::Zeroize;
 
 pub const MODBYTES:usize = 48;
 pub const BASEBITS:usize = 58;
@@ -38,20 +40,11 @@ pub const NEXCESS:isize = (1<<((arch::CHUNK)-BASEBITS-1));
 pub const BIGBITS:usize = (MODBYTES*8);
 
 
-#[derive(Copy)]
+#[derive(Clone, Zeroize)]
+#[zeroize(drop)]
 pub struct BIG {
     pub w: [Chunk; NLEN]
 }
-
-impl Clone for BIG {
-    fn clone(&self) -> BIG { *self }
-}
-/*
-#[derive(Copy, Clone)]
-pub struct BIG {
-    pub w: [Chunk; NLEN]
-}
-*/
 
 impl BIG {
 

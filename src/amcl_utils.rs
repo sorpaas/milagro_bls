@@ -346,7 +346,7 @@ pub fn decompress_g2(g2_bytes: &[u8]) -> Result<GroupG2, DecodeError> {
 //
 // a_flag = floor((y * 2)  / q)
 pub fn calc_a_flag(y: &BigNum) -> u8 {
-    let mut y2 = *y;
+    let mut y2 = y.clone();
     y2.imul(2);
     let q = BigNum::new_ints(&rom::MODULUS);
 

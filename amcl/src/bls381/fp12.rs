@@ -24,7 +24,7 @@ use bls381::fp4::FP4;
 use bls381::big::BIG;
 use bls381::rom;
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct FP12 {
 	a:FP4,
 	b:FP4,
@@ -47,7 +47,7 @@ impl FP12 {
 		f.b.zero();
 		f.c.zero();
 		return f;
-	}	
+	}
 
 	pub fn new_copy(x: &FP12) -> FP12 {
 		let mut f=FP12::new();
@@ -63,7 +63,7 @@ impl FP12 {
 		g.b.copy(e);
 		g.c.copy(f);
 		return g;
-	}	
+	}
 
 	pub fn new_fp4(d: &FP4) -> FP12 {
 		let mut g=FP12::new();
@@ -85,20 +85,20 @@ impl FP12 {
 		self.a.norm();
 		self.b.norm();
 		self.c.norm();
-	}	
+	}
 
 /* test self=0 ? */
 	pub fn iszilch(&mut self) -> bool {
 		self.reduce();
 		return self.a.iszilch() && self.b.iszilch() && self.c.iszilch();
-	}	
+	}
 
 /* Conditional move of g to self dependant on d */
 	pub fn cmove(&mut self,g:&FP12,d: isize) {
 		self.a.cmove(&g.a,d);
 		self.b.cmove(&g.b,d);
 		self.c.cmove(&g.c,d);
-	}	
+	}
 
 /* return 1 if b==c, no branching */
 	fn teq(b: i32,c: i32) -> isize {
@@ -122,11 +122,11 @@ impl FP12 {
 		self.cmove(&g[5],FP12::teq(babs,5));
 		self.cmove(&g[6],FP12::teq(babs,6));
 		self.cmove(&g[7],FP12::teq(babs,7));
- 
+
  		let mut invf=FP12::new_copy(self);
 		invf.conj();
 		self.cmove(&invf,(m&1) as isize);
-	}		
+	}
 
 
 /* test self=1 ? */
@@ -153,7 +153,7 @@ impl FP12 {
 	pub fn getc(&mut self) -> FP4 {
 		let f=FP4::new_copy(&self.c);
 		return f;
-	}	
+	}
 
 /* copy self=x */
 	pub fn copy(&mut self,x :&FP12) {
@@ -273,7 +273,7 @@ impl FP12 {
 		t0.copy(&self.b); t0.add(&self.c);
 		t1.copy(&y.b); t1.add(&y.c);
 
-		t0.norm(); t1.norm();	
+		t0.norm(); t1.norm();
 
 		z3.copy(&t0); z3.mul(&t1);
 
@@ -316,7 +316,7 @@ impl FP12 {
 			let mut z3=FP4::new_copy(&self.b);
 			let mut t0=FP4::new();
 			let mut t1=FP4::new_copy(&y.a);
-		
+
 			z0.mul(&y.a);
 			z2.pmul(&y.b.real());
 			self.b.add(&self.a);
@@ -330,7 +330,7 @@ impl FP12 {
 
 			t0.copy(&z0); t0.neg();
 			t1.copy(&z2); t1.neg();
-	
+
 			self.b.add(&t0);
 		//self.b.norm();
 
@@ -340,7 +340,7 @@ impl FP12 {
 
 			t0.copy(&self.a); t0.add(&self.c);
 			t0.norm(); z3.norm();
-			
+
 			t0.mul(&y.a);
 			self.c.copy(&z2); self.c.add(&t0);
 
@@ -354,7 +354,7 @@ impl FP12 {
 			let mut z3=FP4::new();
 			let mut t0=FP4::new_copy(&self.a);
 			let mut t1=FP4::new();
-		
+
 			z0.mul(&y.a);
 			t0.add(&self.b);
 			t0.norm();
@@ -370,7 +370,7 @@ impl FP12 {
 			t0.copy(&z0); t0.neg();
 
 			z1.add(&t0);
-			self.b.copy(&z1); 
+			self.b.copy(&z1);
 			z2.copy(&t0);
 
 			t0.copy(&self.a); t0.add(&self.c);
@@ -378,12 +378,12 @@ impl FP12 {
 
 			t0.norm();
 			t1.norm();
-	
+
 			t0.mul(&t1);
 			z2.add(&t0);
 
 			t0.copy(&self.c);
-			
+
 			t0.pmul(&y.c.getb());
 			t0.times_i();
 
@@ -397,7 +397,7 @@ impl FP12 {
 			z3.times_i();
 			self.a.copy(&z0); self.a.add(&z3);
 		}
-		self.norm();		
+		self.norm();
 	}
 
 /* self=1/self */
@@ -500,7 +500,7 @@ impl FP12 {
 		a=BIG::frombytes(&t);
 		for i in 0..mb {t[i]=w[i+9*mb]}
 		b=BIG::frombytes(&t);
-		
+
 		c=FP2::new_bigs(&a,&b);
 
 		for i in 0..mb {t[i]=w[i+10*mb]}
@@ -550,12 +550,12 @@ impl FP12 {
     #[cfg(feature = "std")]
 /* output to hex string */
 	pub fn tostring(&mut self) -> String {
-		return format!("[{},{},{}]",self.a.tostring(),self.b.tostring(),self.c.tostring());		
+		return format!("[{},{},{}]",self.a.tostring(),self.b.tostring(),self.c.tostring());
 	}
 
 /* self=self^e */
 	pub fn pow(&self,e: &BIG) -> FP12 {
-		let mut r=FP12::new_copy(self);	
+		let mut r=FP12::new_copy(self);
 		r.norm();
 		let mut e1=BIG::new_copy(e);
 		e1.norm();
@@ -578,7 +578,7 @@ impl FP12 {
 
 		w.reduce();
 		return w;
-	}	
+	}
 
 /* constant time powering by small integer of max length bts */
 	pub fn pinpow(&mut self,e: i32,bts: i32) {
@@ -634,13 +634,13 @@ impl FP12 {
 /* p=q0^u0.q1^u1.q2^u2.q3^u3 */
 // Bos & Costello https://eprint.iacr.org/2013/458.pdf
 // Faz-Hernandez & Longa & Sanchez  https://eprint.iacr.org/2013/158.pdf
-// Side channel attack secure 
+// Side channel attack secure
  	pub fn pow4(q:&[FP12],u:&[BIG]) -> FP12 {
 		let mut g:[FP12;8]=[FP12::new(),FP12::new(),FP12::new(),FP12::new(),FP12::new(),FP12::new(),FP12::new(),FP12::new()];
 
 		let mut r=FP12::new();
 		let mut p=FP12::new();
-		const CT:usize=1+big::NLEN*(big::BASEBITS as usize);		
+		const CT:usize=1+big::NLEN*(big::BASEBITS as usize);
 		let mut w:[i8;CT]=[0;CT];
 		let mut s:[i8;CT]=[0;CT];
 
@@ -665,7 +665,7 @@ impl FP12 {
 // Make it odd
 		let pb=1-t[0].parity();
 		t[0].inc(pb);
-		t[0].norm();	
+		t[0].norm();
 
 // Number of bits
 		mt.zero();
@@ -675,12 +675,12 @@ impl FP12 {
 
 		let nb=1+mt.nbits();
 
-// Sign pivot 
+// Sign pivot
 		s[nb-1]=1;
 		for i in 0..nb-1 {
 			t[0].fshr(1);
 			s[i]=(2*t[0].parity()-1) as i8;
-			//println!("s={}",s[i]);	
+			//println!("s={}",s[i]);
 		}
 
 // Recoded exponent
@@ -706,7 +706,7 @@ impl FP12 {
 		}
 
 // apply correction
-		r.copy(&q[0]); r.conj();   
+		r.copy(&q[0]); r.conj();
 		r.mul(&p);
 		p.cmove(&r,pb);
 		p.reduce();
@@ -723,7 +723,7 @@ impl FP12 {
 
 		let mut c=FP12::new_int(1);
 		let mut p=FP12::new();
-		const CT:usize=1+big::NLEN*(big::BASEBITS as usize);		
+		const CT:usize=1+big::NLEN*(big::BASEBITS as usize);
 		let mut w:[i8;CT]=[0;CT];
 
 		let mut mt=BIG::new();
@@ -752,7 +752,7 @@ impl FP12 {
 		g[4].mul(&s[0]);
 		g[7].mul(&s[1]);
 
-// if power is even add 1 to power, and add q to correction 
+// if power is even add 1 to power, and add q to correction
 
 		for i in 0..4 {
 			if t[i].parity()==0 {
@@ -764,7 +764,7 @@ impl FP12 {
 		c.conj();
 		let nb=1+mt.nbits();
 
-// convert exponent to signed 1-bit window 
+// convert exponent to signed 1-bit window
 		for j in 0..nb {
 			for i in 0..4 {
 				a[i]=(t[i].lastbits(2)-2) as i8;
@@ -778,13 +778,13 @@ impl FP12 {
 
 		for i in (0..nb).rev() {
 			let m=w[i]>>7;
-			let mut j=((w[i]^m)-m) as usize;  // j=abs(w[i]) 
+			let mut j=((w[i]^m)-m) as usize;  // j=abs(w[i])
 			j=(j-1)/2;
 			s[0].copy(&g[j]); s[1].copy(&g[j]); s[1].conj();
 			p.usqr();
 			p.mul(&s[(m&1) as usize]);
 		}
-		p.mul(&c);  // apply correction 
+		p.mul(&c);  // apply correction
 		p.reduce();
 		return p;
 	}

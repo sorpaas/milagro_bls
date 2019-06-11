@@ -21,7 +21,7 @@ use bls381::fp::FP;
 use bls381::fp2::FP2;
 use bls381::big::BIG;
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct FP4 {
 	a:FP2,
 	b:FP2,
@@ -41,28 +41,28 @@ impl FP4 {
 		f.a.copy(&FP2::new_int(a));
 		f.b.zero();
 		return f;
-	}	
+	}
 
 	pub fn new_copy(x: &FP4) -> FP4 {
 		let mut f=FP4::new();
 		f.a.copy(&x.a);
 		f.b.copy(&x.b);
 		return f;
-	}	
+	}
 
 	pub fn new_fp2s(c: &FP2,d: &FP2) -> FP4 {
 		let mut f=FP4::new();
 		f.a.copy(c);
 		f.b.copy(d);
 		return f;
-	}	
+	}
 
 	pub fn new_fp2(c: &FP2) -> FP4 {
 		let mut f=FP4::new();
 		f.a.copy(c);
 		f.b.zero();
 		return f;
-	}	
+	}
 
 /* reduce components mod Modulus */
 	pub fn reduce(&mut self) {
@@ -74,18 +74,18 @@ impl FP4 {
 	pub fn norm(&mut self) {
 		self.a.norm();
 		self.b.norm();
-	}	
+	}
 
 	pub fn cmove(&mut self,g:&FP4,d: isize) {
 		self.a.cmove(&g.a,d);
 		self.b.cmove(&g.b,d);
-	}	
+	}
 
 /* test self=0 ? */
 	pub fn iszilch(&mut self) -> bool {
 		self.reduce();
 		return self.a.iszilch() && self.b.iszilch();
-	}	
+	}
 
 /* test self=1 ? */
 	pub fn isunity(&mut self) -> bool {
@@ -133,7 +133,7 @@ impl FP4 {
 	pub fn one(&mut self) {
 		self.a.one();
 		self.b.zero();
-	}	
+	}
 
 /* negate self mod Modulus */
 	pub fn neg(&mut self) {
@@ -149,7 +149,7 @@ impl FP4 {
 		self.b.add(&self.a);
 		self.a.copy(&t);
 		self.norm();
-	}	
+	}
 
 /* set to a-ib */
 	pub fn conj(&mut self) {
@@ -188,7 +188,7 @@ impl FP4 {
 	pub fn rsub(&mut self,x:&FP4) {
 		self.neg();
 		self.add(x);
-	}	
+	}
 
 /* self*=s, where s is an FP2 */
 	pub fn pmul(&mut self,s:&FP2) {
@@ -208,7 +208,7 @@ impl FP4 {
 		self.b.imul(c);
 	}
 
-/* self*=self */	
+/* self*=self */
 	pub fn sqr(&mut self) {
 	//	self.norm();
 
@@ -269,20 +269,20 @@ impl FP4 {
 		t3.copy(&t2);
 		t3.neg();
 		self.b.copy(&t4);
-		self.b.add(&t3);	
+		self.b.add(&t3);
 
 		t2.mul_ip();
 		self.a.copy(&t2);
 		self.a.add(&t1);
 
 		self.norm();
-	}	
+	}
 
     #[cfg(feature = "std")]
 /* output to hex string */
 	pub fn tostring(&mut self) -> String {
-		return format!("[{},{}]",self.a.tostring(),self.b.tostring());		
-	}	
+		return format!("[{},{}]",self.a.tostring(),self.b.tostring());
+	}
 
 /* self=1/self */
 	pub fn inverse(&mut self) {
@@ -299,7 +299,7 @@ impl FP4 {
 		self.a.mul(&t1);
 		t1.neg(); t1.norm();
 		self.b.mul(&t1);
-	}	
+	}
 
 /* self*=i where i = sqrt(-1+sqrt(-1)) */
 	pub fn times_i(&mut self) {
@@ -312,14 +312,14 @@ impl FP4 {
 		self.b.copy(&self.a);
 		self.a.copy(&t);
 		self.norm();
-	}	
+	}
 
 /* self=self^p using Frobenius */
 	pub fn frob(&mut self,f: &FP2) {
 		self.a.conj();
 		self.b.conj();
 		self.b.mul(f);
-	}	
+	}
 
 /* self=self^e */
 	pub fn pow(&mut self,e: &mut BIG) -> FP4 {
@@ -337,7 +337,7 @@ impl FP4 {
 		}
 		r.reduce();
 		return r;
-	}	
+	}
 
 /* XTR xtr_a function */
 	pub fn xtr_a(&mut self,w:&FP4,y:&FP4,z:&FP4) {
@@ -351,7 +351,7 @@ impl FP4 {
 		t.times_i();
 
 		self.copy(&r);
-		self.add(&t);	
+		self.add(&t);
 		self.add(z);
 
 		self.norm();
@@ -475,7 +475,7 @@ impl FP4 {
 							cv.copy(&cu);
 							cu.copy(&t);
 						}
-					}	
+					}
 				}
 			}
 			if BIG::comp(&d,&e)<0 {
@@ -549,7 +549,7 @@ impl FP4 {
 		u.div_ip();
 		self.a.copy(&v);
 		self.b.copy(&u);
-	}	
+	}
 
 	pub fn div_2i(&mut self) {
 		let mut u=FP2::new_copy(&self.a);
@@ -585,7 +585,7 @@ impl FP4 {
 		a.sqr();
 		s.mul_ip();
 		s.norm();
-		a.sub(&s);   
+		a.sub(&s);
 
 		s.copy(&a);
 		if !s.sqrt() {
