@@ -26,6 +26,10 @@ impl G1Point {
         self.point.add(&point.point);
     }
 
+	pub fn mul(&mut self, num: &BigNum) {
+		self.point.mul(&num);
+	}
+
     pub fn affine(&mut self) {
         self.point.affine();
     }

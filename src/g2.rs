@@ -1,4 +1,4 @@
-use super::amcl_utils::{compress_g2, decompress_g2, GroupG2};
+use super::amcl_utils::{compress_g2, decompress_g2, GroupG2, BigNum};
 use super::errors::DecodeError;
 #[cfg(feature = "std")]
 use std::fmt;
@@ -21,6 +21,10 @@ impl G2Point {
     pub fn add(&mut self, point: &G2Point) {
         self.point.add(&point.point);
     }
+
+	pub fn mul(&mut self, num: &BigNum) {
+		self.point.mul(num);
+	}
 
     pub fn affine(&mut self) {
         self.point.affine();
